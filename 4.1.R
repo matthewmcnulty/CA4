@@ -1,4 +1,6 @@
-# Unzipping datasets folder.
+# Unzipping zip file containing data
+# regarding house sales from January 2010 
+# until now.
 zipfile <- "RPPR.zip"
 unzip(zipfile)
 
@@ -39,10 +41,10 @@ rppr_stats <- function(x)
   input_data$Price <- gsub(",","", input_data$Price, fixed = TRUE)
   input_data$Price <- as.integer(input_data$Price)
   
-  # Converting to data and formatting it as "mmm-yyyy".
+  # Converting to data and formatting it as "mmm-yy".
   date <- (input_data$`Date of Sale`[1])
-  restructured_date <- as.Date(date, "%d/%m/%Y")
-  month <- format(restructured_date, "%b-%y")
+  converted_date <- as.Date(date, "%d/%m/%Y")
+  month <- format(converted_date, "%b-%y")
   
   # Creating vectors of month of sale, total sales,
   # mean price, and median price.
@@ -65,7 +67,7 @@ rppr_stats <- function(x)
   
   colnames(ouput_data) <- output_colnames
   
-  # Outputting results.
+  # Returning output dataframe.
   return(ouput_data)
 }
 

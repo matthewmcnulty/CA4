@@ -188,7 +188,7 @@ diff_seasonal_adj_total_sales <- diff(seasonal_adj_total_sales, lag = 1)
 ndiffs(diff_seasonal_adj_total_sales)
 
 # Plotting the differenced time series with removed seasonal element.
-plot(diff_seasonal_adj_total_sales, main = "Differenced time series with removed seasonal element")
+plot(diff_seasonal_adj_total_sales, main = "Differenced time series with seasonal element removed")
 
 adf.test(diff_seasonal_adj_total_sales)
 # P-value is < 0.01, which is lower than the significance level of
@@ -220,7 +220,8 @@ accuracy(adj_arima_model)
 
 # If model fits well, the residuals should be normally
 # and independently distributed.
-qqnorm(adj_arima_model$residuals)
+qqnorm(adj_arima_model$residuals,
+       main = "Normal Q-Q Plot (Estimated ARIMA Model)")
 qqline(adj_arima_model$residuals)
 # Normally distributed data should fall along the line,
 # which it does in this case.
@@ -247,7 +248,8 @@ accuracy(auto_arima_model)
 
 # If model fits well, the residuals should be normally
 # and independently distributed.
-qqnorm(auto_arima_model$residuals)
+qqnorm(auto_arima_model$residuals,
+       main = "Normal Q-Q Plot (Automated ARIMA Model)")
 qqline(auto_arima_model$residuals)
 # Normally distributed data should fall along the line,
 # which it does in this case.
@@ -263,7 +265,8 @@ Box.test(auto_arima_model$residuals, type = "Ljung-Box")
 # and plotting the first three forecasted values after
 # along with the time series.
 forecast(adj_arima_model)
-plot(forecast(adj_arima_model, 3), 
+plot(forecast(adj_arima_model, 3),
+     main = "Estimated ARIMA Model",
      xlab = "Year", 
      ylab = "Total Sales")
 
@@ -271,7 +274,8 @@ plot(forecast(adj_arima_model, 3),
 # and plotting the first three forecasted values after
 # along with the time series.
 forecast(auto_arima_model)
-plot(forecast(auto_arima_model, 3), 
+plot(forecast(auto_arima_model, 3),
+     main = "Automated ARIMA Model",
      xlab = "Year", 
      ylab = "Total Sales")
 

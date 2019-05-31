@@ -101,7 +101,7 @@ colnames(AllDublinRPPRData) <- output_colnames
 # Showing the total number of rows,
 # the first 10 rows of the data frame, 
 # and the structure of the data frame.
-head(AllDublinRPPRData, 10)
+head(AllDublinRPPRData, 12)
 str(AllDublinRPPRData)
 
 # Creating a time series with 'Total Sales'.
@@ -190,9 +190,9 @@ ndiffs(diff_seasonal_adj_total_sales)
 # Plotting the differenced time series with removed seasonal element.
 plot(diff_seasonal_adj_total_sales, main = "Differenced time series with removed seasonal element")
 
+adf.test(diff_seasonal_adj_total_sales)
 # P-value is < 0.01, which is lower than the significance level of
 # 0.05, which indiciates that this time series is now stationary.
-adf.test(diff_seasonal_adj_total_sales)
 
 # ARIMA MODEL ESTIMATION. -------------------------------------------------------------------------------------------------
 
@@ -211,11 +211,12 @@ pacf_result <- Pacf(diff_seasonal_adj_total_sales,
 # was one, then d = 1. p = 2, and q = 1.
 adj_arima_model <- Arima(seasonal_adj_total_sales, order = c(2, 1, 1))
 adj_arima_model
+# The AIC = 1392.89 and BIC = 1403.62.
 
 # The 'Mean Absolute Percentage Error' can be used to
 # find the prediction accuracy of the model.
 accuracy(adj_arima_model)
-# In this case, the MAPE of the model is equal to.
+# In this case, the MAPE of the model is equal to 18.95%.
 
 # If model fits well, the residuals should be normally
 # and independently distributed.
@@ -227,7 +228,7 @@ qqline(adj_arima_model$residuals)
 # Box test. The null hypothesis H0 states the autocorrelations are
 # all zero.
 Box.test(adj_arima_model$residuals, type = "Ljung-Box")
-# In this case, the p-value is,
+# In this case, the p-value is 0.8. Accept H0.
 
 # ARIMA MODEL AUTOMATION. -------------------------------------------------------------------------------------------------
 
@@ -235,9 +236,14 @@ Box.test(adj_arima_model$residuals, type = "Ljung-Box")
 # undifferenced time series with the removed seasonal element.
 auto_arima_model <- auto.arima(seasonal_adj_total_sales)
 auto_arima_model
+# The AIC = 1386.73 and BIC = 1400.14. These are lower than the
+# respective AIC and BIC values for the estimated model, therefore it is
+# a better fit.
 
 accuracy(auto_arima_model)
-# In this case, the MAPE of the model is equal to.
+# In this case, the MAPE of the model is equal to 17.3%. This is
+# lower than the respective MAPE for the estimated model, therefore
+# it is a better fit.
 
 # If model fits well, the residuals should be normally
 # and independently distributed.
@@ -249,7 +255,7 @@ qqline(auto_arima_model$residuals)
 # Box test. The null hypothesis H0 states the autocorrelations are
 # all zero.
 Box.test(auto_arima_model$residuals, type = "Ljung-Box")
-# In this case, the p-value is,
+# In this case, the p-value is 0.77. Accept H0.
 
 # Forecasting each ARIMA model. -------------------------------------------------------------------------------------------
 
@@ -299,3 +305,6 @@ actual_vs_pred
 cor(actual_vs_pred$`Actual Sales`, actual_vs_pred$`Predicted Sales Adj`)
 cor(actual_vs_pred$`Actual Sales`, actual_vs_pred$`Predicted Sales Auto`)
 
+# While the predicted values of the estimated model correlate well, it has
+# a higher AIC, BIC, and MAPE when compared to the automated model. This
+# likely means that the estimated model overfits the data.
